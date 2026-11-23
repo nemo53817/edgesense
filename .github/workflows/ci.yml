@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: ${{ matrix.os }} / ${{ matrix.compiler }} / ${{ matrix.preset }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [debug, release, asan, tsan]
+        os: [ubuntu-24.04]
+        compiler: [gcc, clang]
+        include:
+          - { os: macos-15, compiler: appleclang, preset: debug }
+          - { os: macos-15, compiler: appleclang, preset: release }
+          - { os: macos-15, compiler: appleclang, preset: asan }
+          - { os: macos-15, compiler: appleclang, preset: tsan }
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install tools (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+
+      - name: Install tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew list ninja >/dev/null 2>&1 || brew install ninja
+
+      - name: Select compiler
+        run: |
+          case "${{ matrix.compiler }}" in
+            gcc)   echo "CC=gcc"   >> "$GITHUB_ENV"; echo "CXX=g++"     >> "$GITHUB_ENV" ;;
+            clang) echo "CC=clang" >> "$GITHUB_ENV"; echo "CXX=clang++" >> "$GITHUB_ENV" ;;
+            appleclang) ;;  # system default
+          esac
+
+      # Ubuntu 24.04 kernels use high mmap ASLR entropy, which makes TSan abort with
+      # "unexpected memory mapping". Lowering it is the standard workaround.
+      - name: Relax ASLR for TSan
+        if: runner.os == 'Linux' && matrix.preset == 'tsan'
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }}
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}
+
+  format:
+    name: clang-format
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      # Pinned to match the local Homebrew clang-format major version (23.x).
+      - run: pipx install clang-format==23.1.5
+      - name: Check formatting
+        run: |
+          git ls-files '*.hpp' '*.h' '*.cpp' '*.cc' \
+            | xargs -r clang-format --dry-run --Werror
