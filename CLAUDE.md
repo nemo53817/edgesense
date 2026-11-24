@@ -14,6 +14,9 @@ Real-time object detection pipeline in modern C++20 for edge devices
 - Configure/build/test: `cmake --preset <p> && cmake --build --preset <p> && ctest --preset <p>`
 - Presets: debug, release, asan (ASan+UBSan), tsan
 - Every concurrency change must pass the `tsan` preset.
+- Linux check on the Mac: `scripts/docker-test.sh [compilers] [presets]` (ubuntu:24.04, arm64)
+- Minimum toolchain (full C++20 library incl. `std::jthread`): GCC >= 12, Clang >= 18 with
+  libstdc++, LLVM libc++ >= 20 / Xcode >= 26. Do not downgrade code for older toolchains.
 
 ## Conventions
 - C++20, namespace `edgesense`, headers in include/edgesense/<module>/

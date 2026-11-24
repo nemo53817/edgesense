@@ -23,10 +23,10 @@ jobs:
         os: [ubuntu-24.04]
         compiler: [gcc, clang]
         include:
-          - { os: macos-15, compiler: appleclang, preset: debug }
-          - { os: macos-15, compiler: appleclang, preset: release }
-          - { os: macos-15, compiler: appleclang, preset: asan }
-          - { os: macos-15, compiler: appleclang, preset: tsan }
+          - { os: macos-26, compiler: appleclang, preset: debug }
+          - { os: macos-26, compiler: appleclang, preset: release }
+          - { os: macos-26, compiler: appleclang, preset: asan }
+          - { os: macos-26, compiler: appleclang, preset: tsan }
     steps:
       - uses: actions/checkout@v5
 
@@ -51,6 +51,9 @@ jobs:
       - name: Relax ASLR for TSan
         if: runner.os == 'Linux' && matrix.preset == 'tsan'
         run: sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Compiler version
+        run: ${CXX:-c++} --version
 
       - name: Configure
         run: cmake --preset ${{ matrix.preset }}
