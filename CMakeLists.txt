@@ -25,8 +25,22 @@ target_compile_options(edgesense_warnings INTERFACE -Wall -Wextra -Wpedantic -Ws
 # Header-only for now; becomes a regular library once src/ has translation units.
 add_library(edgesense INTERFACE)
 add_library(edgesense::edgesense ALIAS edgesense)
-target_include_directories(edgesense INTERFACE ${PROJECT_SOURCE_DIR}/include)
+include(GNUInstallDirs)
+target_include_directories(edgesense INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                                               $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_compile_features(edgesense INTERFACE cxx_std_20)
+
+# Install + export so other projects can use find_package(edgesense) and link
+# edgesense::edgesense, then #include <edgesense/...>.
+include(CMakePackageConfigHelpers)
+set(EDGESENSE_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/edgesense)
+install(TARGETS edgesense EXPORT edgesenseTargets)
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(EXPORT edgesenseTargets NAMESPACE edgesense:: DESTINATION ${EDGESENSE_CMAKE_DIR}
+        FILE edgesenseConfig.cmake)
+write_basic_package_version_file(${PROJECT_BINARY_DIR}/edgesenseConfigVersion.cmake
+                                 COMPATIBILITY SameMajorVersion)
+install(FILES ${PROJECT_BINARY_DIR}/edgesenseConfigVersion.cmake DESTINATION ${EDGESENSE_CMAKE_DIR})
 
 if(EDGESENSE_BUILD_TESTS)
   enable_testing()
