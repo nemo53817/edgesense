@@ -4,5 +4,5 @@ FROM ubuntu:24.04
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      cmake ninja-build g++ clang libclang-rt-18-dev git ca-certificates \
+      cmake ninja-build g++ clang libclang-rt-18-dev git ca-certificates libopencv-dev \
  && rm -rf /var/lib/apt/lists/*
