@@ -8,7 +8,7 @@
 #include <optional>
 #include <utility>
 
-namespace edgesense {
+namespace edgesense::concurrency {
 
 // Minimum distance between two objects to avoid false sharing, as the compiler sees it for the
 // architecture being compiled for (a compile-time value, not detected on the running machine).
@@ -80,4 +80,4 @@ std::optional<T> SpscRing<T, N>::try_pop() {
   return v;
 }
 
-}  // namespace edgesense
+}  // namespace edgesense::concurrency

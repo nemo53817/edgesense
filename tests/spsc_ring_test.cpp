@@ -8,7 +8,7 @@
 
 namespace {
 
-using edgesense::SpscRing;
+using edgesense::concurrency::SpscRing;
 
 TEST(SpscRing, StartsEmpty) {
   SpscRing<int, 4> q;

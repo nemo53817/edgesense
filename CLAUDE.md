@@ -23,6 +23,10 @@ Real-time object detection pipeline in modern C++20 for edge devices
 - Every `app/*.cpp` builds into its own executable with `EDGESENSE_MODEL_PATH` defined.
 
 ## Conventions
-- C++20, namespace `edgesense`, headers in include/edgesense/<module>/
+- C++20, headers in include/edgesense/<module>/, sources in src/<module>/
+- Namespaces: `edgesense::<module>` matching the directory (core, vision, postprocess,
+  inference, concurrency); at most 2 levels. Top-level facades (e.g. Detector) in `edgesense`.
+- Library code takes `core::ImageView`, not `cv::Mat`; OpenCV only in app/. ONNX Runtime only
+  inside src/inference/ (pimpl), no `Ort::` types in public headers.
 - clang-format (Google based, 100 columns); warnings are errors
 - No heap allocation in the per-frame hot path; no user callbacks under a lock
