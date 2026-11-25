@@ -67,7 +67,9 @@
       "name": "tsan",
       "inherits": "base",
       "configurePreset": "tsan",
-      "environment": { "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1" }
+      "environment": {
+        "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1:ignore_noninstrumented_modules=1"
+      }
     }
   ]
 }
