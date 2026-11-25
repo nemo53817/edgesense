@@ -22,13 +22,16 @@ add_library(edgesense_warnings INTERFACE)
 target_compile_options(edgesense_warnings INTERFACE -Wall -Wextra -Wpedantic -Wshadow
                                                     -Wconversion -Wsign-conversion -Werror)
 
-# Header-only for now; becomes a regular library once src/ has translation units.
-add_library(edgesense INTERFACE)
+# The library: every src/**/*.cpp. Static by default (BUILD_SHARED_LIBS switches it).
+file(GLOB_RECURSE EDGESENSE_SOURCES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+add_library(edgesense ${EDGESENSE_SOURCES})
 add_library(edgesense::edgesense ALIAS edgesense)
 include(GNUInstallDirs)
-target_include_directories(edgesense INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                                               $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_compile_features(edgesense INTERFACE cxx_std_20)
+target_include_directories(edgesense PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_compile_features(edgesense PUBLIC cxx_std_20)
+# BUILD_INTERFACE: the warning flags are for building us, not part of the installed package.
+target_link_libraries(edgesense PRIVATE $<BUILD_INTERFACE:edgesense_warnings>)
 
 # Install + export so other projects can use find_package(edgesense) and link
 # edgesense::edgesense, then #include <edgesense/...>.

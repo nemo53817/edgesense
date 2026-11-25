@@ -32,5 +32,8 @@ Real-time object detection pipeline in modern C++20 for edge devices
   inference, concurrency); at most 2 levels. Top-level facades (e.g. Detector) in `edgesense`.
 - Library code takes `core::ImageView`, not `cv::Mat`; OpenCV only in app/. ONNX Runtime only
   inside src/inference/ (pimpl), no `Ort::` types in public headers.
+- Naming: types PascalCase; functions and methods snake_case (like std::); constants kName;
+  data members snake_case with trailing underscore; namespaces and files lowercase.
+  Local variables: author's choice.
 - clang-format (Google based, 100 columns); warnings are errors
 - No heap allocation in the per-frame hot path; no user callbacks under a lock
