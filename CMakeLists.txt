@@ -42,6 +42,16 @@ write_basic_package_version_file(${PROJECT_BINARY_DIR}/edgesenseConfigVersion.cm
                                  COMPATIBILITY SameMajorVersion)
 install(FILES ${PROJECT_BINARY_DIR}/edgesenseConfigVersion.cmake DESTINATION ${EDGESENSE_CMAKE_DIR})
 
+option(EDGESENSE_BUILD_APPS "Build apps (needs ONNX Runtime, OpenCV and the model)" ON)
+if(EDGESENSE_BUILD_APPS)
+  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+  include(onnxruntime)
+  include(model)
+  find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
+  message(STATUS "edgesense: OpenCV ${OpenCV_VERSION}")
+  add_subdirectory(app)
+endif()
+
 if(EDGESENSE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)

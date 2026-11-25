@@ -17,6 +17,10 @@ Real-time object detection pipeline in modern C++20 for edge devices
 - Linux check on the Mac: `scripts/docker-test.sh [compilers] [presets]` (ubuntu:24.04, arm64)
 - Minimum toolchain (full C++20 library incl. `std::jthread`): GCC >= 12, Clang >= 18 with
   libstdc++, LLVM libc++ >= 20 / Xcode >= 26. Do not downgrade code for older toolchains.
+- Dependencies: ONNX Runtime 1.32.0 (from this repo's `onnxruntime-1.32.0` release, rebuilt from
+  NuGet by `scripts/repackage-onnxruntime.sh`; upstream GitHub repo was 404 on 2026-11-25),
+  OpenCV (system: Homebrew 5.x on Mac, apt 4.6 on Ubuntu), YOLOX-Nano downloaded to `models/`.
+- Every `app/*.cpp` builds into its own executable with `EDGESENSE_MODEL_PATH` defined.
 
 ## Conventions
 - C++20, namespace `edgesense`, headers in include/edgesense/<module>/
