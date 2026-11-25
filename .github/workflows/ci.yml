@@ -42,7 +42,7 @@ jobs:
 
       # ONNX Runtime comes from this repo's release; the model is downloaded at configure time.
       - name: Cache model
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: models
           key: model-yolox-nano-c789161e
