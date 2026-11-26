@@ -17,6 +17,14 @@ if(EDGESENSE_SANITIZE)
   add_link_options(-fsanitize=${EDGESENSE_SANITIZE})
 endif()
 
+# Coverage (gcov format, read by gcovr; see scripts/coverage.sh). Atomic counters keep the counts
+# correct in multi-threaded tests such as the SpscRing stress test.
+option(EDGESENSE_COVERAGE "Instrument for code coverage" OFF)
+if(EDGESENSE_COVERAGE)
+  add_compile_options(--coverage -fprofile-update=atomic)
+  add_link_options(--coverage)
+endif()
+
 # Warnings-as-errors for our own targets only (not for fetched dependencies).
 add_library(edgesense_warnings INTERFACE)
 target_compile_options(edgesense_warnings INTERFACE -Wall -Wextra -Wpedantic -Wshadow

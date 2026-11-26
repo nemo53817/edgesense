@@ -19,6 +19,9 @@ Real-time object detection pipeline in modern C++20 for edge devices
   Without it, Linux reports false races inside ORT's thread pool. Running apps by hand on Linux:
   `TSAN_OPTIONS=halt_on_error=1:ignore_noninstrumented_modules=1 ./build/tsan/app/<app>`
 - Linux check on the Mac: `scripts/docker-test.sh [compilers] [presets]` (ubuntu:24.04, arm64)
+- Coverage: `scripts/coverage.sh` (preset `coverage`, gcovr 8.8) -> build/coverage/report/index.html.
+  CI job "coverage (gcc)" puts the table in the run summary and uploads the HTML report.
+  Only include/ and src/ are measured. gcc is the reference; clang counts lines differently.
 - Minimum toolchain (full C++20 library incl. `std::jthread`): GCC >= 12, Clang >= 18 with
   libstdc++, LLVM libc++ >= 20 / Xcode >= 26. Do not downgrade code for older toolchains.
 - Dependencies: ONNX Runtime 1.32.0 (from this repo's `onnxruntime-1.32.0` release, rebuilt from

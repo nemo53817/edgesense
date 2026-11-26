@@ -37,13 +37,24 @@
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "EDGESENSE_SANITIZE": "thread"
       }
+    },
+    {
+      "name": "coverage",
+      "displayName": "Coverage (gcov)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "EDGESENSE_COVERAGE": "ON",
+        "EDGESENSE_BUILD_APPS": "OFF"
+      }
     }
   ],
   "buildPresets": [
     { "name": "debug", "configurePreset": "debug" },
     { "name": "release", "configurePreset": "release" },
     { "name": "asan", "configurePreset": "asan" },
-    { "name": "tsan", "configurePreset": "tsan" }
+    { "name": "tsan", "configurePreset": "tsan" },
+    { "name": "coverage", "configurePreset": "coverage" }
   ],
   "testPresets": [
     {
@@ -70,6 +81,7 @@
       "environment": {
         "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1:ignore_noninstrumented_modules=1"
       }
-    }
+    },
+    { "name": "coverage", "inherits": "base", "configurePreset": "coverage" }
   ]
 }
